@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/handlename/my-golang-template/cli"
+	"github.com/handlename/awsc/cli"
 )
 
 func main() {
