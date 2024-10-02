@@ -24,7 +24,7 @@ func Run() ExitCode {
 	var cli struct {
 		Version  bool     `help:"Print version"`
 		LogLevel string   `help:"Log level" enum:"trace,debug,info,warn,error,panic" env:"AWSC_LOG_LEVEL" default:"info"`
-		Patterns []string `help:"Pattern for AWS profile to highlight" name:"pattern" env:"AWSC_PATTERN" default:"production"`
+		Patterns []string `help:"Pattern for AWS profile to highlight" name:"pattern" short:"p" env:"AWSC_PATTERN" default:"production"`
 		Argv     []string `arg:""`
 	}
 
