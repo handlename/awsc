@@ -1,9 +1,9 @@
-package myapp
+package awsc
 
 import (
 	"context"
 
-	errcode "github.com/handlename/my-golang-template/internal/errorcode"
+	"github.com/handlename/my-golang-template/internal/errorcode"
 	"github.com/morikuni/failure/v2"
 )
 

@@ -1,4 +1,4 @@
-module github.com/handlename/my-golang-template
+module github.com/handlename/awsc
 
 go 1.22
 

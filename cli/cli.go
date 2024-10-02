@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/signal"
 
-	myapp "github.com/handlename/my-golang-template"
+	"github.com/handlename/awsc"
 	"github.com/rs/zerolog/log"
 )
 
@@ -24,16 +24,16 @@ func Run() ExitCode {
 		return ExitCodeError
 	}
 
-	myapp.InitLogger(flags.LogLevel)
+	awsc.InitLogger(flags.LogLevel)
 
 	if flags.Version {
-		log.Info().Msgf("myapp v%s", myapp.Version)
+		log.Info().Msgf("awsc v%s", awsc.Version)
 		return ExitCodeOK
 	}
 
 	// TODO: build options for new App
 
-	app := myapp.NewApp()
+	app := awsc.NewApp()
 
 	// TODO: build options to run App
 
