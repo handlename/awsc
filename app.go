@@ -13,6 +13,11 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+const (
+	AWSProfileFlag = "--profile"
+	AWSProfileEnv  = "AWS_PROFILE"
+)
+
 type App struct {
 	// patterns is highlight patterns for aws profile.
 	// If profile name matches any of patterns, awsc outputs and hilights that
@@ -46,7 +51,7 @@ func (a *App) Run(ctx context.Context) error {
 func (a *App) DetectProfile() string {
 	// read profile from args
 	for i, v := range a.argv {
-		if v == "--profile" {
+		if v == AWSProfileFlag {
 			if i+1 < len(a.argv) {
 				p := a.argv[i+1]
 				log.Debug().Str("profile", p).Msg("profile detected from argv")
@@ -56,7 +61,7 @@ func (a *App) DetectProfile() string {
 	}
 
 	// read profile from envs
-	p := os.Getenv("AWS_PROFILE")
+	p := os.Getenv(AWSProfileEnv)
 	if p != "" {
 		log.Debug().Str("profile", p).Msg("profile detected from envs")
 		return p
@@ -95,7 +100,7 @@ func (a *App) Highlight(profile string) error {
 	// TODO: ability to change highlight style
 	c := color.New(color.FgBlack, color.BgRed)
 
-	if _, err := c.Fprintf(os.Stderr, "AWS_PROFILE=%s\n", profile); err != nil {
+	if _, err := c.Fprintf(os.Stderr, "%s=%s\n", AWSProfileEnv, profile); err != nil {
 		return failure.Wrap(err,
 			failure.WithCode(errorcode.ErrInternal),
 			failure.Message("failed to highlight"))
