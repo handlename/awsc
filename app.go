@@ -2,17 +2,127 @@ package awsc
 
 import (
 	"context"
+	"os"
+	"os/exec"
+	"regexp"
+	"syscall"
 
-	"github.com/handlename/my-golang-template/internal/errorcode"
+	"github.com/fatih/color"
+	"github.com/handlename/awsc/internal/errorcode"
 	"github.com/morikuni/failure/v2"
+	"github.com/rs/zerolog/log"
 )
 
-type App struct{}
+type App struct {
+	// patterns is highlight patterns for aws profile.
+	// If profile name matches any of patterns, awsc outputs and hilights that
+	patterns []string
 
-func NewApp() *App {
-	return &App{}
+	// argv is arguments for AWS CLI
+	argv []string
+}
+
+func NewApp(patterns []string, argv []string) *App {
+	return &App{
+		patterns: patterns,
+		argv:     argv,
+	}
 }
 
 func (a *App) Run(ctx context.Context) error {
-	return failure.New(errcode.ErrNotImplemented, failure.Message("not implemented yet"))
+	profile := a.DetectProfile()
+
+	if yes, err := a.ShouldHighlight(profile); err != nil {
+		return failure.Wrap(err, failure.Message("failed to check highlight target"))
+	} else if yes {
+		if err := a.Highlight(profile); err != nil {
+			return failure.Wrap(err, failure.Message("failed to hilight"))
+		}
+	}
+
+	return a.exec()
+}
+
+func (a *App) DetectProfile() string {
+	// read profile from args
+	for i, v := range a.argv {
+		if v == "--profile" {
+			if i+1 < len(a.argv) {
+				p := a.argv[i+1]
+				log.Debug().Str("profile", p).Msg("profile detected from argv")
+				return p
+			}
+		}
+	}
+
+	// read profile from envs
+	p := os.Getenv("AWS_PROFILE")
+	if p != "" {
+		log.Debug().Str("profile", p).Msg("profile detected from envs")
+		return p
+	}
+
+	return ""
+}
+
+func (a *App) ShouldHighlight(profile string) (bool, error) {
+	if profile == "" {
+		log.Debug().Msg("no profile specified. skip to highlight")
+		return false, nil
+	}
+
+	for _, p := range a.patterns {
+		log.Debug().Str("pattern", p).Msg("checking pattern")
+
+		r, err := regexp.Compile(p)
+		if err != nil {
+			return false, failure.Wrap(err,
+				failure.WithCode(errorcode.ErrInvalidArgument),
+				failure.Messagef("failed to compile pattern: %s", p))
+		}
+
+		if r.MatchString(profile) {
+			return true, nil
+		}
+	}
+
+	log.Debug().Msg("no pattern matched")
+
+	return false, nil
+}
+
+func (a *App) Highlight(profile string) error {
+	// TODO: ability to change highlight style
+	c := color.New(color.FgBlack, color.BgRed)
+
+	if _, err := c.Fprintf(os.Stderr, "AWS_PROFILE=%s\n", profile); err != nil {
+		return failure.Wrap(err,
+			failure.WithCode(errorcode.ErrInternal),
+			failure.Message("failed to highlight"))
+	}
+
+	return nil
+}
+
+func (a *App) exec() error {
+	// TODO: ability to change aws cli command path
+	cmd := "aws"
+
+	bin, err := exec.LookPath(cmd)
+	if err != nil {
+		return failure.Wrap(err,
+			failure.WithCode(errorcode.ErrInternal),
+			failure.Messagef("command is not executable %s", cmd))
+	}
+
+	argv := append([]string{cmd}, a.argv...)
+	log.Debug().Str("bin", bin).Strs("argv", argv).Msg("exec")
+
+	if err := syscall.Exec(bin, argv, os.Environ()); err != nil {
+		return failure.Wrap(err,
+			failure.WithCode(errorcode.ErrInternal),
+			failure.Message("failed to exec aws"))
+	}
+
+	return nil
 }
