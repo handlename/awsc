@@ -20,15 +20,19 @@ const (
 	ExitCodeError ExitCode = 1
 )
 
+const (
+	EnvPrefix = "AWSC"
+)
+
 func Run() ExitCode {
 	var cli struct {
-		Version  bool     `help:"Print version"`
-		LogLevel string   `help:"Log level" enum:"trace,debug,info,warn,error,panic" env:"AWSC_LOG_LEVEL" default:"info"`
-		Patterns []string `help:"Pattern for AWS profile to highlight" name:"pattern" short:"p" env:"AWSC_PATTERN" default:"production"`
+		Version  bool     `help:"Print version" env:"-"`
+		LogLevel string   `help:"Log level" enum:"trace,debug,info,warn,error,panic" default:"info"`
+		Patterns []string `help:"Pattern for AWS profile to highlight" name:"pattern" short:"p" default:"production"`
 		Argv     []string `arg:""`
 	}
 
-	kc := kong.Parse(&cli)
+	kc := kong.Parse(&cli, kong.DefaultEnvars(EnvPrefix))
 	if err := kc.Error; err != nil {
 		log.Error().Err(err).Msg("failed to parse flags")
 		return ExitCodeError
