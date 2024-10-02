@@ -1,0 +1,22 @@
+name: test
+
+on:
+  - push
+
+jobs:
+  test:
+    name: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go:
+          - '1.22.x'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+          cache-dependency-path: '**/go.sum'
+      - name: build & test
+        run: |
+          make test
