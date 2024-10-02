@@ -1,6 +1,6 @@
 module github.com/handlename/awsc
 
-go 1.22
+go 1.23
 
 require (
 	github.com/morikuni/failure/v2 v2.0.0-20240419002657-2551069d1c86
