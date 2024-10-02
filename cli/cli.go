@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/alecthomas/kong"
 	"github.com/handlename/awsc"
 	"github.com/morikuni/failure/v2"
 	"github.com/rs/zerolog/log"
@@ -20,20 +21,28 @@ const (
 )
 
 func Run() ExitCode {
-	flags, err := parseFlags(os.Args[0], os.Args[1:])
-	if err != nil {
+	var cli struct {
+		Version  bool     `help:"Print version"`
+		LogLevel string   `help:"Log level" enum:"trace,debug,info,warn,error,panic" env:"AWSC_LOG_LEVEL" default:"info"`
+		Patterns []string `help:"Pattern for AWS profile to highlight" name:"pattern" env:"AWSC_PATTERN" default:"production"`
+		Argv     []string `arg:""`
+	}
+
+	kc := kong.Parse(&cli)
+	if err := kc.Error; err != nil {
 		log.Error().Err(err).Msg("failed to parse flags")
 		return ExitCodeError
 	}
 
-	awsc.InitLogger(flags.LogLevel)
+	awsc.InitLogger(cli.LogLevel)
 
-	if flags.Version {
+	if cli.Version {
 		log.Info().Msgf("awsc v%s", awsc.Version)
 		return ExitCodeOK
 	}
 
-	app := awsc.NewApp([]string(flags.Patterns), flags.Argv)
+	log.Debug().Strs("args", cli.Argv)
+	app := awsc.NewApp(cli.Patterns, cli.Argv)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
