@@ -5,9 +5,17 @@ import (
 )
 
 type Config struct {
-	// patterns is highlight patterns for aws profile.
+	// Patterns is highlight patterns for aws profile.
 	// If profile name matches any of patterns, awsc outputs and hilights that
-	Patterns []string `yaml:"patterns,omitempty"`
+	Patterns []Pattern `yaml:"patterns,omitempty"`
+}
+
+type Pattern struct {
+	// Expression is regexp for AWS profile name to match
+	Expression string `yaml:"expression,omitempty"`
+
+	// Color is highlight color for matched profile name
+	Color string `yaml:"color,omitempty"`
 }
 
 func Load(path string) (*Config, error) {

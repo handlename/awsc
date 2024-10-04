@@ -1,2 +1,5 @@
 patterns:
-  - production
+  - expression: production
+    color: red
+  - expression: private
+    color: green
