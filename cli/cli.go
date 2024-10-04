@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"path/filepath"
 
-	"github.com/alecthomas/kong"
 	"github.com/handlename/awsc"
+	"github.com/handlename/awsc/internal/errorcode"
 	"github.com/morikuni/failure/v2"
 	"github.com/rs/zerolog/log"
 )
@@ -21,37 +22,34 @@ const (
 )
 
 const (
-	EnvPrefix = "AWSC"
+	EnvPrefix           = "AWSC"
+	EnvConfigPath       = EnvPrefix + "_CONFIG_PATH"
+	EnvDefaultConfigDir = "XDG_CONFIG_PATH"
 )
 
 func Run() ExitCode {
-	var cli struct {
-		Version  bool     `help:"Print version" env:"-"`
-		LogLevel string   `help:"Log level" enum:"trace,debug,info,warn,error,panic" default:"info"`
-		Patterns []string `help:"Pattern for AWS profile to highlight" name:"pattern" short:"p" default:"production"`
-		Argv     []string `arg:""`
+	logLevel := os.Getenv(EnvPrefix + "_LOG_LEVEL")
+	if logLevel == "" {
+		logLevel = "info"
 	}
+	awsc.InitLogger(logLevel)
 
-	kc := kong.Parse(&cli, kong.DefaultEnvars(EnvPrefix))
-	if err := kc.Error; err != nil {
-		log.Error().Err(err).Msg("failed to parse flags")
+	configPath, err := determineConigPath()
+	if err != nil {
+		handleError(err)
 		return ExitCodeError
 	}
 
-	awsc.InitLogger(cli.LogLevel)
-
-	if cli.Version {
-		log.Info().Msgf("awsc v%s", awsc.Version)
-		return ExitCodeOK
+	app, err := awsc.NewApp(configPath)
+	if err != nil {
+		handleError(err)
+		return ExitCodeError
 	}
-
-	log.Debug().Strs("args", cli.Argv)
-	app := awsc.NewApp(cli.Patterns, cli.Argv)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 
-	if err := app.Run(ctx); err != nil {
+	if err := app.Run(ctx, os.Args[1:]); err != nil {
 		if errors.Is(err, context.Canceled) {
 			log.Error().Msg("canceled")
 		} else {
@@ -62,6 +60,35 @@ func Run() ExitCode {
 	}
 
 	return ExitCodeOK
+}
+
+func determineConigPath() (string, error) {
+	if p := os.Getenv(EnvConfigPath); p != "" {
+		return p, nil
+	}
+
+	for _, p := range []string{
+		filepath.Join(os.Getenv(EnvDefaultConfigDir), "awsc", "config.yaml"),
+		filepath.Join(os.Getenv("HOME"), ".awsc", "config.yaml"),
+	} {
+		if _, err := os.Stat(p); err != nil {
+			if errors.Is(err, os.ErrNotExist) {
+				continue
+			}
+
+			return "", failure.Wrap(err,
+				failure.WithCode(errorcode.ErrInternal),
+				failure.Message("failed to stat"),
+				failure.Context{
+					"path": p,
+				},
+			)
+		}
+
+		return p, nil
+	}
+
+	return "", nil
 }
 
 func handleError(err error) {

@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"github.com/fatih/color"
+	"github.com/handlename/awsc/internal/config"
 	"github.com/handlename/awsc/internal/errorcode"
 	"github.com/morikuni/failure/v2"
 	"github.com/rs/zerolog/log"
@@ -19,23 +20,22 @@ const (
 )
 
 type App struct {
-	// patterns is highlight patterns for aws profile.
-	// If profile name matches any of patterns, awsc outputs and hilights that
-	patterns []string
-
-	// argv is arguments for AWS CLI
-	argv []string
+	config *config.Config
 }
 
-func NewApp(patterns []string, argv []string) *App {
-	return &App{
-		patterns: patterns,
-		argv:     argv,
+func NewApp(configPath string) (*App, error) {
+	c, err := config.Load(configPath)
+	if err != nil {
+		return nil, failure.Wrap(err, failure.Message("failed to load config"))
 	}
+
+	return &App{
+		config: c,
+	}, nil
 }
 
-func (a *App) Run(ctx context.Context) error {
-	profile := a.DetectProfile()
+func (a *App) Run(ctx context.Context, argv []string) error {
+	profile := a.DetectProfile(argv)
 
 	if yes, err := a.ShouldHighlight(profile); err != nil {
 		return failure.Wrap(err, failure.Message("failed to check highlight target"))
@@ -45,15 +45,15 @@ func (a *App) Run(ctx context.Context) error {
 		}
 	}
 
-	return a.exec()
+	return a.exec(argv)
 }
 
-func (a *App) DetectProfile() string {
-	// read profile from args
-	for i, v := range a.argv {
+func (a *App) DetectProfile(argv []string) string {
+	// read profile from argv
+	for i, v := range argv {
 		if v == AWSProfileFlag {
-			if i+1 < len(a.argv) {
-				p := a.argv[i+1]
+			if i+1 < len(argv) {
+				p := argv[i+1]
 				log.Debug().Str("profile", p).Msg("profile detected from argv")
 				return p
 			}
@@ -76,7 +76,7 @@ func (a *App) ShouldHighlight(profile string) (bool, error) {
 		return false, nil
 	}
 
-	for _, p := range a.patterns {
+	for _, p := range a.config.Patterns {
 		log.Debug().Str("pattern", p).Msg("checking pattern")
 
 		r, err := regexp.Compile(p)
@@ -109,7 +109,7 @@ func (a *App) Highlight(profile string) error {
 	return nil
 }
 
-func (a *App) exec() error {
+func (a *App) exec(argv []string) error {
 	// TODO: ability to change aws cli command path
 	cmd := "aws"
 
@@ -120,10 +120,10 @@ func (a *App) exec() error {
 			failure.Messagef("command is not executable %s", cmd))
 	}
 
-	argv := append([]string{cmd}, a.argv...)
-	log.Debug().Str("bin", bin).Strs("argv", argv).Msg("exec")
+	args := append([]string{cmd}, argv...)
+	log.Debug().Str("bin", bin).Strs("args", args).Msg("exec")
 
-	if err := syscall.Exec(bin, argv, os.Environ()); err != nil {
+	if err := syscall.Exec(bin, args, os.Environ()); err != nil {
 		return failure.Wrap(err,
 			failure.WithCode(errorcode.ErrInternal),
 			failure.Message("failed to exec aws"))
