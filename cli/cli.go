@@ -23,12 +23,13 @@ const (
 
 const (
 	EnvPrefix           = "AWSC"
+	EnvLogLevel         = EnvPrefix + "_LOG_LEVEL"
 	EnvConfigPath       = EnvPrefix + "_CONFIG_PATH"
 	EnvDefaultConfigDir = "XDG_CONFIG_PATH"
 )
 
 func Run() ExitCode {
-	logLevel := os.Getenv(EnvPrefix + "_LOG_LEVEL")
+	logLevel := os.Getenv(EnvLogLevel)
 	if logLevel == "" {
 		logLevel = "info"
 	}
