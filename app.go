@@ -1,9 +1,12 @@
 package awsc
 
 import (
+	"bytes"
 	"context"
+	"html/template"
 	"os"
 	"os/exec"
+	"strings"
 	"syscall"
 
 	"github.com/fatih/color"
@@ -97,6 +100,12 @@ func (a *App) ShouldHighlight(profile string) *entity.Pattern {
 	return nil
 }
 
+var highlightTmpl = template.Must(template.New("highlight").Parse(strings.Join([]string{
+	"╓ AWS Account info",
+	"╙ Profile: {{ .Profile }}",
+}, "\n"),
+))
+
 func (a *App) Highlight(profile string, pattern *entity.Pattern) error {
 	var bg color.Attribute
 	fg := color.FgBlack
@@ -122,7 +131,16 @@ func (a *App) Highlight(profile string, pattern *entity.Pattern) error {
 
 	c := color.New(fg, bg)
 
-	if _, err := c.Fprintf(os.Stderr, "%s=%s\n", AWSProfileEnv, profile); err != nil {
+	var buf bytes.Buffer
+	if err := highlightTmpl.Execute(&buf, map[string]string{
+		"Profile": profile,
+	}); err != nil {
+		return failure.Wrap(err,
+			failure.WithCode(errorcode.ErrInternal),
+			failure.Message("failed to execute template"))
+	}
+
+	if _, err := c.Fprintf(os.Stderr, buf.String()); err != nil {
 		return failure.Wrap(err,
 			failure.WithCode(errorcode.ErrInternal),
 			failure.Message("failed to highlight"))
