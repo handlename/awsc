@@ -107,29 +107,28 @@ var highlightTmpl = template.Must(template.New("highlight").Parse(strings.Join([
 ))
 
 func (a *App) Highlight(profile string, pattern *entity.Pattern) error {
-	var bg color.Attribute
-	fg := color.FgBlack
+	var fg color.Attribute
 
 	switch pattern.Color() {
 	case entity.Red:
-		bg = color.BgRed
+		fg = color.FgRed
 	case entity.Green:
-		bg = color.BgGreen
+		fg = color.FgGreen
 	case entity.Yellow:
-		bg = color.BgYellow
+		fg = color.FgYellow
 	case entity.Blue:
-		bg = color.BgBlue
+		fg = color.FgBlue
 	case entity.Magenta:
-		bg = color.BgMagenta
+		fg = color.FgMagenta
 	case entity.Cyan:
-		bg = color.BgCyan
+		fg = color.FgCyan
 	case entity.White:
-		bg = color.BgWhite
+		fg = color.FgWhite
 	case entity.Black:
-		bg = color.BgBlack
+		fg = color.FgBlack
 	}
 
-	c := color.New(fg, bg)
+	c := color.New(fg)
 
 	var buf bytes.Buffer
 	if err := highlightTmpl.Execute(&buf, map[string]string{
