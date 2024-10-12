@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/handlename/awsc"
+	"github.com/handlename/awsc/internal/env"
 	"github.com/handlename/awsc/internal/errorcode"
 	"github.com/morikuni/failure/v2"
 	"github.com/rs/zerolog/log"
@@ -22,7 +23,7 @@ const (
 )
 
 func Run() ExitCode {
-	logLevel := os.Getenv(awsc.EnvLogLevel)
+	logLevel := os.Getenv(env.EnvLogLevel)
 	if logLevel == "" {
 		logLevel = "info"
 	}
@@ -57,12 +58,12 @@ func Run() ExitCode {
 }
 
 func determineConigPath() (string, error) {
-	if p := os.Getenv(awsc.EnvConfigPath); p != "" {
+	if p := os.Getenv(env.EnvConfigPath); p != "" {
 		return p, nil
 	}
 
 	for _, p := range []string{
-		filepath.Join(os.Getenv(awsc.EnvDefaultConfigDir), "awsc", "config.yaml"),
+		filepath.Join(os.Getenv(env.EnvDefaultConfigDir), "awsc", "config.yaml"),
 		filepath.Join(os.Getenv("HOME"), ".awsc", "config.yaml"),
 	} {
 		if _, err := os.Stat(p); err != nil {
