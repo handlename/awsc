@@ -127,7 +127,7 @@ func (a *App) ShouldHighlight(account *entity.Account) *entity.Pattern {
 	return nil
 }
 
-var highlightTmpl = template.Must(template.New("highlight").Parse(strings.Join([]string{
+var defaultTmpl = template.Must(template.New("default").Parse(strings.Join([]string{
 	"╓ AWS Account info",
 	"║ Profile {{ .Profile }}",
 	"║ Region  {{ .Region }}",
@@ -162,8 +162,19 @@ func (a *App) Highlight(account *entity.Account, pattern *entity.Pattern) error 
 
 	c := color.New(fg)
 
+	tmpl := defaultTmpl
+	if a.config.Template != "" {
+		var err error
+		tmpl, err = template.New("custom").Parse(a.config.Template)
+		if err != nil {
+			return failure.Wrap(err,
+				failure.WithCode(errorcode.ErrInvalidArgument),
+				failure.Message("failed to parse template"))
+		}
+	}
+
 	var buf bytes.Buffer
-	if err := highlightTmpl.Execute(&buf, map[string]string{
+	if err := tmpl.Execute(&buf, map[string]string{
 		"Now": time.Now().Format(a.config.TimeFormat),
 
 		"Profile": account.Profile(),
