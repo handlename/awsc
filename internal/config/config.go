@@ -8,6 +8,10 @@ type Config struct {
 	// Patterns is highlight patterns for aws profile.
 	// If profile name matches any of patterns, awsc outputs and hilights that
 	Patterns []Pattern `yaml:"patterns,omitempty"`
+
+	// AdditionalInfo is flag to show additional information.
+	// If true, awsc shows additional information, but it calls additional AWS API.
+	AdditionalInfo bool `yaml:"additional_info,omitempty"`
 }
 
 type Pattern struct {

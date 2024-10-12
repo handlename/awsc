@@ -74,7 +74,17 @@ func (a *App) buildAccount(ctx context.Context, profile string) (*entity.Account
 		return nil, failure.Wrap(err, failure.Message("failed to load aws config"))
 	}
 
-	return entity.NewAccount(profile, cfg), nil
+	opts := []entity.AccountOption{}
+	if a.config.AdditionalInfo {
+		opts = append(opts, entity.AccountOptionWithAdditionalInfo)
+	}
+
+	account, err := entity.NewAccount(ctx, profile, cfg, opts...)
+	if err != nil {
+		return nil, failure.Wrap(err, failure.Message("failed to create account"))
+	}
+
+	return account, nil
 }
 
 func (a *App) detectProfile(argv []string) string {
@@ -119,7 +129,10 @@ func (a *App) ShouldHighlight(account *entity.Account) *entity.Pattern {
 var highlightTmpl = template.Must(template.New("highlight").Parse(strings.Join([]string{
 	"╓ AWS Account info",
 	"║ Profile {{ .Profile }}",
-	"╙ Region  {{ .Region }}",
+	"║ Region  {{ .Region }}",
+	`║ ID      {{ if .ID }}{{ .ID }}{{ else }}N/A{{ end }}`,
+	`║ ARN     {{ if .Arn }}{{ .Arn }}{{ else }}N/A{{ end }}`,
+	`╙ UserID  {{ if .UserID }}{{ .UserID }}{{ else }}N/A{{ end }}`,
 }, "\n"),
 ))
 
@@ -151,6 +164,11 @@ func (a *App) Highlight(account *entity.Account, pattern *entity.Pattern) error 
 	if err := highlightTmpl.Execute(&buf, map[string]string{
 		"Profile": account.Profile(),
 		"Region":  account.Region(),
+
+		// Additional info
+		"ID":     account.ID(),
+		"UserID": account.UserID(),
+		"Arn":    account.Arn(),
 	}); err != nil {
 		return failure.Wrap(err,
 			failure.WithCode(errorcode.ErrInternal),
