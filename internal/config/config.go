@@ -12,6 +12,10 @@ type Config struct {
 	// AdditionalInfo is flag to show additional information.
 	// If true, awsc shows additional information, but it calls additional AWS API.
 	AdditionalInfo bool `yaml:"additional_info,omitempty"`
+
+	// TimeFormat is format for time in output
+	// Default is "2006-01-02 15:04:05"
+	TimeFormat string `yaml:"time_format,omitempty"`
 }
 
 type Pattern struct {
@@ -30,6 +34,10 @@ func Load(path string) (*Config, error) {
 	c := &Config{}
 	if err := goconfig.LoadWithEnv(c, path); err != nil {
 		return nil, err
+	}
+
+	if c.TimeFormat == "" {
+		c.TimeFormat = "2006-01-02 15:04:05"
 	}
 
 	return c, nil

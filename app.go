@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"strings"
 	"syscall"
+	"time"
 
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/fatih/color"
@@ -132,7 +133,8 @@ var highlightTmpl = template.Must(template.New("highlight").Parse(strings.Join([
 	"║ Region  {{ .Region }}",
 	`║ ID      {{ if .ID }}{{ .ID }}{{ else }}N/A{{ end }}`,
 	`║ ARN     {{ if .Arn }}{{ .Arn }}{{ else }}N/A{{ end }}`,
-	`╙ UserID  {{ if .UserID }}{{ .UserID }}{{ else }}N/A{{ end }}`,
+	`║ UserID  {{ if .UserID }}{{ .UserID }}{{ else }}N/A{{ end }}`,
+	"╙ [{{ .Now }}]",
 }, "\n"),
 ))
 
@@ -162,6 +164,8 @@ func (a *App) Highlight(account *entity.Account, pattern *entity.Pattern) error 
 
 	var buf bytes.Buffer
 	if err := highlightTmpl.Execute(&buf, map[string]string{
+		"Now": time.Now().Format(a.config.TimeFormat),
+
 		"Profile": account.Profile(),
 		"Region":  account.Region(),
 
