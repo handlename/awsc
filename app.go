@@ -10,6 +10,7 @@ import (
 	"strings"
 	"syscall"
 
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/fatih/color"
 	"github.com/handlename/awsc/internal/config"
 	"github.com/handlename/awsc/internal/entity"
@@ -51,7 +52,7 @@ func NewApp(configPath string) (*App, error) {
 }
 
 func (a *App) Run(ctx context.Context, argv []string) error {
-	account, err := a.buildAccount(a.detectProfile(argv))
+	account, err := a.buildAccount(ctx, a.detectProfile(argv))
 	if err != nil {
 		return failure.Wrap(err,
 			failure.WithCode(errorcode.ErrInternal),
@@ -67,8 +68,13 @@ func (a *App) Run(ctx context.Context, argv []string) error {
 	return a.exec(argv)
 }
 
-func (a *App) buildAccount(profile string) (*entity.Account, error) {
-	return entity.NewAccount(profile), nil
+func (a *App) buildAccount(ctx context.Context, profile string) (*entity.Account, error) {
+	cfg, err := awsconfig.LoadDefaultConfig(ctx, awsconfig.WithSharedConfigProfile(profile))
+	if err != nil {
+		return nil, failure.Wrap(err, failure.Message("failed to load aws config"))
+	}
+
+	return entity.NewAccount(profile, cfg), nil
 }
 
 func (a *App) detectProfile(argv []string) string {
@@ -112,7 +118,8 @@ func (a *App) ShouldHighlight(account *entity.Account) *entity.Pattern {
 
 var highlightTmpl = template.Must(template.New("highlight").Parse(strings.Join([]string{
 	"╓ AWS Account info",
-	"╙ Profile: {{ .Profile }}",
+	"║ Profile {{ .Profile }}",
+	"╙ Region  {{ .Region }}",
 }, "\n"),
 ))
 
@@ -143,6 +150,7 @@ func (a *App) Highlight(account *entity.Account, pattern *entity.Pattern) error 
 	var buf bytes.Buffer
 	if err := highlightTmpl.Execute(&buf, map[string]string{
 		"Profile": account.Profile(),
+		"Region":  account.Region(),
 	}); err != nil {
 		return failure.Wrap(err,
 			failure.WithCode(errorcode.ErrInternal),
