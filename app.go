@@ -3,6 +3,7 @@ package awsc
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"html/template"
 	"os"
 	"os/exec"
@@ -144,6 +145,8 @@ func (a *App) Highlight(profile string, pattern *entity.Pattern) error {
 			failure.WithCode(errorcode.ErrInternal),
 			failure.Message("failed to highlight"))
 	}
+
+	fmt.Println("")
 
 	return nil
 }
