@@ -51,10 +51,15 @@ func NewApp(configPath string) (*App, error) {
 }
 
 func (a *App) Run(ctx context.Context, argv []string) error {
-	profile := a.DetectProfile(argv)
+	account, err := a.buildAccount(a.detectProfile(argv))
+	if err != nil {
+		return failure.Wrap(err,
+			failure.WithCode(errorcode.ErrInternal),
+			failure.Message("failed to build account"))
+	}
 
-	if pattern := a.ShouldHighlight(profile); pattern != nil {
-		if err := a.Highlight(profile, pattern); err != nil {
+	if pattern := a.ShouldHighlight(account); pattern != nil {
+		if err := a.Highlight(account, pattern); err != nil {
 			return failure.Wrap(err, failure.Message("failed to hilight"))
 		}
 	}
@@ -62,7 +67,11 @@ func (a *App) Run(ctx context.Context, argv []string) error {
 	return a.exec(argv)
 }
 
-func (a *App) DetectProfile(argv []string) string {
+func (a *App) buildAccount(profile string) (*entity.Account, error) {
+	return entity.NewAccount(profile), nil
+}
+
+func (a *App) detectProfile(argv []string) string {
 	// read profile from argv
 	for i, v := range argv {
 		if v == AWSProfileFlag {
@@ -84,14 +93,14 @@ func (a *App) DetectProfile(argv []string) string {
 	return ""
 }
 
-func (a *App) ShouldHighlight(profile string) *entity.Pattern {
-	if profile == "" {
+func (a *App) ShouldHighlight(account *entity.Account) *entity.Pattern {
+	if account.Profile() == "" {
 		log.Debug().Msg("no profile specified. skip to highlight")
 		return nil
 	}
 
 	for _, p := range a.patterns {
-		if p.Match(profile) {
+		if p.Match(account.Profile()) {
 			return p
 		}
 	}
@@ -107,7 +116,7 @@ var highlightTmpl = template.Must(template.New("highlight").Parse(strings.Join([
 }, "\n"),
 ))
 
-func (a *App) Highlight(profile string, pattern *entity.Pattern) error {
+func (a *App) Highlight(account *entity.Account, pattern *entity.Pattern) error {
 	var fg color.Attribute
 
 	switch pattern.Color() {
@@ -133,7 +142,7 @@ func (a *App) Highlight(profile string, pattern *entity.Pattern) error {
 
 	var buf bytes.Buffer
 	if err := highlightTmpl.Execute(&buf, map[string]string{
-		"Profile": profile,
+		"Profile": account.Profile(),
 	}); err != nil {
 		return failure.Wrap(err,
 			failure.WithCode(errorcode.ErrInternal),
