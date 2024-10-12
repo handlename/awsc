@@ -21,15 +21,8 @@ const (
 	ExitCodeError ExitCode = 1
 )
 
-const (
-	EnvPrefix           = "AWSC"
-	EnvLogLevel         = EnvPrefix + "_LOG_LEVEL"
-	EnvConfigPath       = EnvPrefix + "_CONFIG_PATH"
-	EnvDefaultConfigDir = "XDG_CONFIG_PATH"
-)
-
 func Run() ExitCode {
-	logLevel := os.Getenv(EnvLogLevel)
+	logLevel := os.Getenv(awsc.EnvLogLevel)
 	if logLevel == "" {
 		logLevel = "info"
 	}
@@ -64,12 +57,12 @@ func Run() ExitCode {
 }
 
 func determineConigPath() (string, error) {
-	if p := os.Getenv(EnvConfigPath); p != "" {
+	if p := os.Getenv(awsc.EnvConfigPath); p != "" {
 		return p, nil
 	}
 
 	for _, p := range []string{
-		filepath.Join(os.Getenv(EnvDefaultConfigDir), "awsc", "config.yaml"),
+		filepath.Join(os.Getenv(awsc.EnvDefaultConfigDir), "awsc", "config.yaml"),
 		filepath.Join(os.Getenv("HOME"), ".awsc", "config.yaml"),
 	} {
 		if _, err := os.Stat(p); err != nil {
