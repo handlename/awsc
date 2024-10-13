@@ -59,6 +59,7 @@ func Run() ExitCode {
 
 func determineConigPath() (string, error) {
 	if p := os.Getenv(env.EnvConfigPath); p != "" {
+		log.Debug().Str("path", p).Msg("using config path from environment variable")
 		return p, nil
 	}
 
@@ -67,8 +68,10 @@ func determineConigPath() (string, error) {
 		filepath.Join(os.Getenv("HOME"), ".config", "awsc", "config.yaml"),
 		filepath.Join(os.Getenv("HOME"), ".awsc", "config.yaml"),
 	} {
+		log.Debug().Str("path", p).Msg("checking config path")
 		if _, err := os.Stat(p); err != nil {
 			if errors.Is(err, os.ErrNotExist) {
+				log.Debug().Str("path", p).Msg("config path not found")
 				continue
 			}
 

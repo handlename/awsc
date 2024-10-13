@@ -31,6 +31,7 @@ type App struct {
 }
 
 func NewApp(configPath string) (*App, error) {
+	log.Debug().Str("config", configPath).Msg("load config")
 	c, err := config.Load(configPath)
 	if err != nil {
 		return nil, failure.Wrap(err, failure.Message("failed to load config"))
