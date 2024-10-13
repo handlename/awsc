@@ -26,8 +26,8 @@ const (
 )
 
 type App struct {
-	config   *config.Config
-	patterns []*entity.Pattern
+	config *config.Config
+	rules  []*entity.Rule
 }
 
 func NewApp(configPath string) (*App, error) {
@@ -37,19 +37,19 @@ func NewApp(configPath string) (*App, error) {
 		return nil, failure.Wrap(err, failure.Message("failed to load config"))
 	}
 
-	ps := make([]*entity.Pattern, 0, len(c.Patterns))
-	for _, cp := range c.Patterns {
-		p, err := entity.NewPattern(cp.Expression, cp.Color)
+	ps := make([]*entity.Rule, 0, len(c.Rules))
+	for _, cp := range c.Rules {
+		p, err := entity.NewRule(cp.Expression, cp.Color)
 		if err != nil {
-			return nil, failure.Wrap(err, failure.Message("failed to create pattern"))
+			return nil, failure.Wrap(err, failure.Message("failed to create rule"))
 		}
 
 		ps = append(ps, p)
 	}
 
 	return &App{
-		config:   c,
-		patterns: ps,
+		config: c,
+		rules:  ps,
 	}, nil
 }
 
@@ -61,8 +61,8 @@ func (a *App) Run(ctx context.Context, argv []string) error {
 			failure.Message("failed to build account"))
 	}
 
-	if pattern := a.ShouldHighlight(account); pattern != nil {
-		if err := a.Highlight(account, pattern); err != nil {
+	if rule := a.ShouldHighlight(account); rule != nil {
+		if err := a.Highlight(account, rule); err != nil {
 			return failure.Wrap(err, failure.Message("failed to hilight"))
 		}
 	}
@@ -111,19 +111,19 @@ func (a *App) detectProfile(argv []string) string {
 	return ""
 }
 
-func (a *App) ShouldHighlight(account *entity.Account) *entity.Pattern {
+func (a *App) ShouldHighlight(account *entity.Account) *entity.Rule {
 	if account.Profile() == "" {
 		log.Debug().Msg("no profile specified. skip to highlight")
 		return nil
 	}
 
-	for _, p := range a.patterns {
+	for _, p := range a.rules {
 		if p.Match(account.Profile()) {
 			return p
 		}
 	}
 
-	log.Debug().Msg("no pattern matched")
+	log.Debug().Msg("no rule matched")
 
 	return nil
 }
@@ -139,10 +139,10 @@ var defaultTmpl = template.Must(template.New("default").Parse(strings.Join([]str
 }, "\n"),
 ))
 
-func (a *App) Highlight(account *entity.Account, pattern *entity.Pattern) error {
+func (a *App) Highlight(account *entity.Account, rule *entity.Rule) error {
 	var fg color.Attribute
 
-	switch pattern.Color() {
+	switch rule.Color() {
 	case entity.Red:
 		fg = color.FgRed
 	case entity.Green:

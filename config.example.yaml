@@ -1,4 +1,4 @@
-patterns:
+rules:
   - expression: production
     color: red
   - expression: private

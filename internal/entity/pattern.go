@@ -7,15 +7,15 @@ import (
 	"github.com/morikuni/failure/v2"
 )
 
-type Pattern struct {
+type Rule struct {
 	expression *regexp.Regexp
 	color      Color
 }
 
-func NewPattern(expression, color string) (*Pattern, error) {
+func NewRule(expression, color string) (*Rule, error) {
 	r, err := regexp.Compile(expression)
 	if err != nil {
-		return &Pattern{}, failure.Wrap(err,
+		return &Rule{}, failure.Wrap(err,
 			failure.WithCode(errorcode.ErrInvalidArgument),
 			failure.Message("failed to compile expression"),
 			failure.Context{
@@ -26,7 +26,7 @@ func NewPattern(expression, color string) (*Pattern, error) {
 
 	c, err := ParseColor(color)
 	if err != nil {
-		return &Pattern{}, failure.Wrap(err,
+		return &Rule{}, failure.Wrap(err,
 			failure.WithCode(errorcode.ErrInvalidArgument),
 			failure.Message("failed to parse color"),
 			failure.Context{
@@ -35,13 +35,13 @@ func NewPattern(expression, color string) (*Pattern, error) {
 			})
 	}
 
-	return &Pattern{expression: r, color: c}, nil
+	return &Rule{expression: r, color: c}, nil
 }
 
-func (p *Pattern) Color() Color {
+func (p *Rule) Color() Color {
 	return p.color
 }
 
-func (p *Pattern) Match(s string) bool {
+func (p *Rule) Match(s string) bool {
 	return p.expression.MatchString(s)
 }

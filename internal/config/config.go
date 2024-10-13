@@ -5,9 +5,8 @@ import (
 )
 
 type Config struct {
-	// Patterns is highlight patterns for aws profile.
-	// If profile name matches any of patterns, awsc outputs and hilights that
-	Patterns []Pattern `yaml:"patterns,omitempty"`
+	// Rules is slice of caution display rule.
+	Rules []Rule `yaml:"rules,omitempty"`
 
 	// Template is output template
 	// If empty, default template is used.
@@ -29,7 +28,7 @@ type Config struct {
 	TimeFormat string `yaml:"time_format,omitempty"`
 }
 
-type Pattern struct {
+type Rule struct {
 	// Expression is regexp for AWS profile name to match
 	Expression string `yaml:"expression,omitempty"`
 
