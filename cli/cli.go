@@ -64,6 +64,7 @@ func determineConigPath() (string, error) {
 
 	for _, p := range []string{
 		filepath.Join(os.Getenv(env.EnvDefaultConfigDir), "awsc", "config.yaml"),
+		filepath.Join(os.Getenv("HOME"), ".config", "awsc", "config.yaml"),
 		filepath.Join(os.Getenv("HOME"), ".awsc", "config.yaml"),
 	} {
 		if _, err := os.Stat(p); err != nil {
