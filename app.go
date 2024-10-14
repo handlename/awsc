@@ -77,7 +77,7 @@ func (a *App) buildAccount(ctx context.Context, profile string) (*entity.Account
 	}
 
 	opts := []entity.AccountOption{}
-	if a.config.AdditionalInfo {
+	if a.config.ExtraInfo {
 		opts = append(opts, entity.AccountOptionWithAdditionalInfo)
 	}
 

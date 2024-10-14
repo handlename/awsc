@@ -13,15 +13,15 @@ type Config struct {
 	// Available variables are:
 	// - .Profile: AWS profile name
 	// - .Region: AWS region
-	// - .ID: AWS account ID (if AdditionalInfo is true)
-	// - .UserID: AWS user ID (if AdditionalInfo is true)
-	// - .Arn: AWS ARN (if AdditionalInfo is true)
+	// - .ID: AWS account ID (if ExtraInfo is true)
+	// - .UserID: AWS user ID (if ExtraInfo is true)
+	// - .Arn: AWS ARN (if ExtraInfo is true)
 	// - .Now: Timestamp at command executed, formatted by `TimeFormat`
 	Template string
 
-	// AdditionalInfo is flag to show additional information.
-	// If true, awsc shows additional information, but it calls additional AWS API.
-	AdditionalInfo bool `yaml:"additional_info,omitempty"`
+	// ExtraInfo is flag to show extra information.
+	// If true, awsc makes one or more API calls to AWS to gather extra data.
+	ExtraInfo bool `yaml:"extra_info,omitempty"`
 
 	// TimeFormat is format for time in output
 	// Default is "2006-01-02 15:04:05"
