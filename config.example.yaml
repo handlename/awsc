@@ -1,5 +1,6 @@
 rules:
   - expression: production
     color: red
+    confirm_on_modify: true
   - expression: private
     color: green

@@ -8,11 +8,12 @@ import (
 )
 
 type Rule struct {
-	expression *regexp.Regexp
-	color      Color
+	expression      *regexp.Regexp
+	color           Color
+	confirmOnModify bool
 }
 
-func NewRule(expression, color string) (*Rule, error) {
+func NewRule(expression, color string, confirm bool) (*Rule, error) {
 	r, err := regexp.Compile(expression)
 	if err != nil {
 		return &Rule{}, failure.Wrap(err,
@@ -35,7 +36,11 @@ func NewRule(expression, color string) (*Rule, error) {
 			})
 	}
 
-	return &Rule{expression: r, color: c}, nil
+	return &Rule{
+		expression:      r,
+		color:           c,
+		confirmOnModify: confirm,
+	}, nil
 }
 
 func (p *Rule) Color() Color {
@@ -44,4 +49,8 @@ func (p *Rule) Color() Color {
 
 func (p *Rule) Match(s string) bool {
 	return p.expression.MatchString(s)
+}
+
+func (p *Rule) ConfirmOnModify() bool {
+	return p.confirmOnModify
 }

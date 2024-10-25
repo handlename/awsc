@@ -16,6 +16,7 @@ import (
 	"github.com/handlename/awsc/internal/config"
 	"github.com/handlename/awsc/internal/entity"
 	"github.com/handlename/awsc/internal/errorcode"
+	"github.com/handlename/awsc/internal/infra/aws"
 	"github.com/morikuni/failure/v2"
 	"github.com/rs/zerolog/log"
 )
@@ -39,7 +40,7 @@ func NewApp(configPath string) (*App, error) {
 
 	ps := make([]*entity.Rule, 0, len(c.Rules))
 	for _, cp := range c.Rules {
-		p, err := entity.NewRule(cp.Expression, cp.Color)
+		p, err := entity.NewRule(cp.Expression, cp.Color, cp.ConfirmOnModify)
 		if err != nil {
 			return nil, failure.Wrap(err, failure.Message("failed to create rule"))
 		}
@@ -54,6 +55,8 @@ func NewApp(configPath string) (*App, error) {
 }
 
 func (a *App) Run(ctx context.Context, argv []string) error {
+	asvc := aws.NewService()
+
 	account, err := a.buildAccount(ctx, a.detectProfile(argv))
 	if err != nil {
 		return failure.Wrap(err,
@@ -64,6 +67,18 @@ func (a *App) Run(ctx context.Context, argv []string) error {
 	if rule := a.ShouldHighlight(account); rule != nil {
 		if err := a.Highlight(account, rule); err != nil {
 			return failure.Wrap(err, failure.Message("failed to hilight"))
+		}
+
+		if rule.ConfirmOnModify() {
+			readonly, err := asvc.IsReadonly(argv)
+			if err != nil {
+				log.Warn().Err(err).Msg("failed to determine readonly or not")
+				readonly = false // lean to safe side
+			}
+			if !readonly && !a.Confirm(account, argv) {
+				fmt.Fprintln(os.Stderr, "confirmation is not passed. skip to run")
+				return nil
+			}
 		}
 	}
 
@@ -197,9 +212,24 @@ func (a *App) Highlight(account *entity.Account, rule *entity.Rule) error {
 			failure.Message("failed to highlight"))
 	}
 
-	fmt.Println("")
+	fmt.Fprintln(os.Stderr, "")
 
 	return nil
+}
+
+// Confirm returns true if user confirms to execute the command
+func (a *App) Confirm(account *entity.Account, argv []string) bool {
+	fmt.Fprintln(os.Stderr, "You looks like to modify AWS resources.")
+	fmt.Fprintln(os.Stderr, "Only 'yes' will be accepted to run the command.")
+	fmt.Fprint(os.Stderr, "Enter a value: ")
+
+	var v string
+	if _, err := fmt.Scan(&v); err != nil {
+		log.Warn().Err(err).Msg("failed to scan input")
+		return false
+	}
+
+	return strings.TrimSpace(v) == "yes"
 }
 
 func (a *App) exec(argv []string) error {
