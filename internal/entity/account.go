@@ -5,8 +5,8 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-	"github.com/handlename/awsc/internal/errorcode"
 	"github.com/morikuni/failure/v2"
+	"github.com/rs/zerolog/log"
 )
 
 type Account struct {
@@ -49,9 +49,8 @@ func AccountOptionWithAdditionalInfo(ctx context.Context, account *Account, conf
 	client := sts.NewFromConfig(config)
 	res, err := client.GetCallerIdentity(ctx, &sts.GetCallerIdentityInput{})
 	if err != nil {
-		return failure.Wrap(err,
-			failure.WithCode(errorcode.ErrInternal),
-			failure.Message("failed to get caller identity"))
+		log.Warn().Err(err).Msg("failed to get caller identity for additional info")
+		return nil
 	}
 
 	account.id = *res.Account
