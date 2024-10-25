@@ -147,6 +147,14 @@ var defaultTmpl = template.Must(template.New("default").Parse(strings.Join([]str
 	"╓ AWS Account info",
 	"║ Profile {{ .Profile }}",
 	"║ Region  {{ .Region }}",
+	"╙ [{{ .Now }}]",
+}, "\n"),
+))
+
+var defaultWithAdditionalInfoTmpl = template.Must(template.New("default").Parse(strings.Join([]string{
+	"╓ AWS Account info",
+	"║ Profile {{ .Profile }}",
+	"║ Region  {{ .Region }}",
 	`║ ID      {{ if .ID }}{{ .ID }}{{ else }}N/A{{ end }}`,
 	`║ ARN     {{ if .Arn }}{{ .Arn }}{{ else }}N/A{{ end }}`,
 	`║ UserID  {{ if .UserID }}{{ .UserID }}{{ else }}N/A{{ end }}`,
@@ -178,7 +186,7 @@ func (a *App) Highlight(account *entity.Account, rule *entity.Rule) error {
 
 	c := color.New(fg)
 
-	tmpl := defaultTmpl
+	var tmpl *template.Template
 	if a.config.Template != "" {
 		var err error
 		tmpl, err = template.New("custom").Parse(a.config.Template)
@@ -186,6 +194,12 @@ func (a *App) Highlight(account *entity.Account, rule *entity.Rule) error {
 			return failure.Wrap(err,
 				failure.WithCode(errorcode.ErrInvalidArgument),
 				failure.Message("failed to parse template"))
+		}
+	} else {
+		if a.config.ExtraInfo {
+			tmpl = defaultWithAdditionalInfoTmpl
+		} else {
+			tmpl = defaultTmpl
 		}
 	}
 
