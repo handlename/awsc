@@ -7,15 +7,11 @@ jobs:
   test:
     name: build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go:
-          - '1.22.x'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ matrix.go }}
+          go-version-file: go.mod
           cache-dependency-path: '**/go.sum'
       - name: build & test
         run: |
