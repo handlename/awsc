@@ -81,6 +81,7 @@ var | description
 ---|---
 `$AWSC_LOG_LEVEL` | Log level: `trace`, `debug`, `info`(default), `warn`, `error`, `panic`
 `$AWSC_CONFIG_PATH` | Path to the configuration file.
+`$AWSC_SHOW_VERSION` | Show version
 
 ## Lisence
 

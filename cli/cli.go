@@ -23,6 +23,11 @@ const (
 )
 
 func Run() ExitCode {
+	if s := os.Getenv(env.EnvShowVersion); s != "" {
+		fmt.Printf("awsc v%s", awsc.Version)
+		return ExitCodeOK
+	}
+
 	logLevel := os.Getenv(env.EnvLogLevel)
 	if logLevel == "" {
 		logLevel = "info"
