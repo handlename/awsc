@@ -35,6 +35,18 @@ func Test_App_IsReadonly(t *testing.T) {
 			argv: []string{"s3api", "select-object-content", "s3://bucket/file.txt", "--expression", "SELECT * FROM S3Object"},
 			want: true,
 		},
+		{
+			argv: []string{"help"},
+			want: true,
+		},
+		{
+			argv: []string{"ec2", "help"},
+			want: true,
+		},
+		{
+			argv: []string{"ec2", "delete-cluster", "help"},
+			want: true,
+		},
 
 		// false
 		{

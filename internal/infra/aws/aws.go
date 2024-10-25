@@ -18,6 +18,12 @@ var readonlyActionRx = regexp.MustCompile(`^((get|list|describe|select)-.*)|(ls)
 
 // IsReadonly determines whether the command will only read resources on AWS.
 func (s Service) IsReadonly(argv []string) (bool, error) {
+	if (len(argv) == 1 && argv[0] == "help") ||
+		(len(argv) == 2 && argv[1] == "help") ||
+		(len(argv) == 3 && argv[2] == "help") {
+		return true, nil
+	}
+
 	if len(argv) < 2 {
 		return false, failure.New(
 			errorcode.ErrInvalidArgument,
