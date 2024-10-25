@@ -212,7 +212,7 @@ func (a *App) Highlight(account *entity.Account, rule *entity.Rule) error {
 			failure.Message("failed to highlight"))
 	}
 
-	fmt.Println("")
+	fmt.Fprintln(os.Stderr, "")
 
 	return nil
 }
