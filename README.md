@@ -44,6 +44,8 @@ rules:
     # "color" specifies the caution's foreground color.
     # Available options: red, green, yellow, blue, magenta, cyan, white, black
     color: red
+    # "confirm_on_modify" determines whether to confirm on run modification command by AWS CLI
+    confirm_on_modify: true
   - expression: '(staging|stg)'
     color: green
   - expression: '(development|dev|sandbox)'
