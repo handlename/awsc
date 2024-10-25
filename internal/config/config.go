@@ -34,6 +34,9 @@ type Rule struct {
 
 	// Color is highlight color for matched profile name
 	Color string `yaml:"color,omitempty"`
+
+	// ConfirmOnModify is flag to confirm before modification
+	ConfirmOnModify bool `yaml:"confirm_on_modify,omitempty"`
 }
 
 func Load(path string) (*Config, error) {
