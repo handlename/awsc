@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_App_IsReadonly(t *testing.T) {
@@ -82,12 +83,12 @@ func Test_App_IsReadonly(t *testing.T) {
 		t.Run(fmt.Sprintf("%t: %v", tt.want, tt.argv), func(t *testing.T) {
 			got, err := asvc.IsReadonly(tt.argv)
 			if tt.wantErr {
-				assert.Error(t, err)
+				require.Error(t, err)
 				assert.Contains(t, err.Error(), tt.errBody)
 				return
 			}
 
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			assert.Equal(t, tt.want, got)
 		})
 	}
