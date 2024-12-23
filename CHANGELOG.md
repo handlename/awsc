@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.2.1](https://github.com/handlename/awsc/compare/v0.2.0...v0.2.1) - 2024-12-23
+- chore(deps): bump github.com/aws/aws-sdk-go-v2/config from 1.27.43 to 1.28.5 by @dependabot in https://github.com/handlename/awsc/pull/16
+- chore(deps): bump github.com/aws/aws-sdk-go-v2/service/sts from 1.33.1 to 1.33.3 by @dependabot in https://github.com/handlename/awsc/pull/18
+- chore(deps): bump github.com/aws/aws-sdk-go-v2 from 1.32.5 to 1.32.7 by @dependabot in https://github.com/handlename/awsc/pull/19
+- chore(deps): bump github.com/stretchr/testify from 1.9.0 to 1.10.0 by @dependabot in https://github.com/handlename/awsc/pull/14
+- chore(deps): bump github.com/fatih/color from 1.17.0 to 1.18.0 by @dependabot in https://github.com/handlename/awsc/pull/12
+- Use "require" instead of "assert" by @handlename in https://github.com/handlename/awsc/pull/20
+
 ## [v0.2.0](https://github.com/handlename/awsc/compare/v0.1.0...v0.2.0) - 2024-10-25
 - Confirm on modify resources by @handlename in https://github.com/handlename/awsc/pull/3
 - test by go 1.23 by @handlename in https://github.com/handlename/awsc/pull/4
