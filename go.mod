@@ -3,7 +3,7 @@ module github.com/handlename/awsc
 go 1.23
 
 require (
-	github.com/aws/aws-sdk-go-v2 v1.32.5
+	github.com/aws/aws-sdk-go-v2 v1.32.7
 	github.com/aws/aws-sdk-go-v2/config v1.28.5
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.1
 	github.com/fatih/color v1.17.0
