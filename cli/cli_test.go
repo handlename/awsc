@@ -71,6 +71,14 @@ func Test_determineConfigPath(t *testing.T) {
 			},
 			want: filepath.Join(testdataRoot, "home2", ".awsc", "config.yaml"),
 		},
+		{
+			name: "a file is placed in path than expects a directory",
+			env: map[string]string{
+				"HOME": filepath.Join(testdataRoot, "home3"),
+			},
+			wantErr: true,
+			errBody: "expects a directory",
+		},
 	}
 
 	for _, tt := range tests {
@@ -82,6 +90,13 @@ func Test_determineConfigPath(t *testing.T) {
 			}
 
 			path, err := determineConigPath()
+
+			if tt.wantErr {
+				require.Error(t, err)
+				assert.Contains(t, err.Error(), tt.errBody)
+				return
+			}
+
 			require.NoError(t, err)
 			assert.Equal(t, tt.want, path)
 		})

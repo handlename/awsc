@@ -4,9 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strings"
 
 	"github.com/handlename/awsc"
 	"github.com/handlename/awsc/internal/env"
@@ -78,6 +80,20 @@ func determineConigPath() (string, error) {
 			if errors.Is(err, os.ErrNotExist) {
 				log.Debug().Str("path", p).Msg("config path not found")
 				continue
+			}
+
+			var pathErr *fs.PathError
+			if errors.As(err, &pathErr) {
+				// When a file is placed in path than expects a directory
+				if strings.Contains(pathErr.Error(), "not a directory") {
+					return "", failure.Wrap(err,
+						failure.WithCode(errorcode.ErrInternal),
+						failure.Message("a file is placed in path than expects a directory"),
+						failure.Context{
+							"path": p,
+						},
+					)
+				}
 			}
 
 			return "", failure.Wrap(err,
