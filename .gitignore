@@ -25,3 +25,6 @@ go.work
 
 # GoReleaser dist directory
 dist/*
+
+# Test report
+test-report.xml

@@ -6,13 +6,22 @@ on:
 jobs:
   test:
     name: build
+    permissions:
+      checks: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-          cache-dependency-path: '**/go.sum'
-      - name: build & test
+          cache-dependency-path: "**/go.sum"
+      - name: test
         run: |
           make test
+      - name: report
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            ./test-report.xml
