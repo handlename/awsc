@@ -29,7 +29,7 @@ You can customize awsc's behavior using a configuration file.
 The search paths for the configuration file (in order of priority) are as follows:
 
 - `$AWSC_CONFIG_PATH`
-- `$XDG_CONFIG_PATH/awsc/config.yaml`
+- `$XDG_CONFIG_HOME/awsc/config.yaml`
 - `~/.config/awsc/config.yaml`
 - `~/.awsc/config.yaml`
 
