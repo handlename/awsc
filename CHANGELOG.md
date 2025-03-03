@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.2.3](https://github.com/handlename/awsc/compare/v0.2.2...v0.2.3) - 2025-03-03
+- Fix XDG_CONFIG_PATH by @handlename in https://github.com/handlename/awsc/pull/25
+- chore(deps): bump github.com/aws/aws-sdk-go-v2/config from 1.28.5 to 1.28.7 by @dependabot in https://github.com/handlename/awsc/pull/27
+- chore(deps): bump github.com/aws/aws-sdk-go-v2 from 1.32.7 to 1.36.0 by @dependabot in https://github.com/handlename/awsc/pull/28
+- group dependabot pull requests for aws-sdk-go-v2 by @handlename in https://github.com/handlename/awsc/pull/36
+- chore(deps): bump github.com/aws/aws-sdk-go-v2/config from 1.28.7 to 1.29.8 by @dependabot in https://github.com/handlename/awsc/pull/35
+
 ## [v0.2.2](https://github.com/handlename/awsc/compare/v0.2.1...v0.2.2) - 2024-12-27
 - Use XDG_CONFIG_HOME by @handlename in https://github.com/handlename/awsc/pull/21
 - Show detailed error when unexpected file exists in config path by @handlename in https://github.com/handlename/awsc/pull/23
