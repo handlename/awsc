@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.3.0](https://github.com/handlename/awsc/compare/v0.2.3...v0.3.0) - 2025-08-02
+- chore(deps): bump github.com/rs/zerolog from 1.33.0 to 1.34.0 by @dependabot[bot] in https://github.com/handlename/awsc/pull/38
+- chore(deps): bump the dependencies group with 2 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/37
+- chore(deps): bump the dependencies group with 2 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/40
+- chore(deps): bump the dependencies group with 3 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/41
+- chore(deps): bump the dependencies group with 3 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/42
+
 ## [v0.2.3](https://github.com/handlename/awsc/compare/v0.2.2...v0.2.3) - 2025-03-03
 - Fix XDG_CONFIG_PATH by @handlename in https://github.com/handlename/awsc/pull/25
 - chore(deps): bump github.com/aws/aws-sdk-go-v2/config from 1.28.5 to 1.28.7 by @dependabot in https://github.com/handlename/awsc/pull/27
