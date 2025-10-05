@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.4.0](https://github.com/handlename/awsc/compare/v0.3.0...v0.4.0) - 2025-10-05
+- chore(deps): bump github.com/stretchr/testify from 1.10.0 to 1.11.1 by @dependabot[bot] in https://github.com/handlename/awsc/pull/43
+- chore(deps): bump the dependencies group with 3 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/44
+- chore(deps): bump the dependencies group with 3 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/46
+- chore: Configure Renovate by @renovate[bot] in https://github.com/handlename/awsc/pull/47
+- chore(deps): update actions/checkout action to v5 by @renovate[bot] in https://github.com/handlename/awsc/pull/48
+- Pin actions by @handlename in https://github.com/handlename/awsc/pull/51
+- Use latest stable Go by @handlename in https://github.com/handlename/awsc/pull/52
+- chore(deps): update actions/setup-go action to v6 by @renovate[bot] in https://github.com/handlename/awsc/pull/49
+- chore(deps): update goreleaser/goreleaser-action action to v6 by @renovate[bot] in https://github.com/handlename/awsc/pull/54
+- chore(deps): update songmu/tagpr action to v1.9.0 by @renovate[bot] in https://github.com/handlename/awsc/pull/53
+
 ## [v0.3.0](https://github.com/handlename/awsc/compare/v0.2.3...v0.3.0) - 2025-08-02
 - chore(deps): bump github.com/rs/zerolog from 1.33.0 to 1.34.0 by @dependabot[bot] in https://github.com/handlename/awsc/pull/38
 - chore(deps): bump the dependencies group with 2 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/37
