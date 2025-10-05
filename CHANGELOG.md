@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.4.0](https://github.com/handlename/awsc/compare/v0.3.0...v0.4.0) - 2025-10-05
+## [v0.3.1](https://github.com/handlename/awsc/compare/v0.3.0...v0.3.1) - 2025-10-05
 - chore(deps): bump github.com/stretchr/testify from 1.10.0 to 1.11.1 by @dependabot[bot] in https://github.com/handlename/awsc/pull/43
 - chore(deps): bump the dependencies group with 3 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/44
 - chore(deps): bump the dependencies group with 3 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/46
