@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.4.0](https://github.com/handlename/awsc/compare/v0.3.2...v0.4.0) - 2025-11-03
+- chore(deps): bump the dependencies group with 3 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/59
+- chore(deps): update enricomi/publish-unit-test-result-action action to v2.21.0 by @renovate[bot] in https://github.com/handlename/awsc/pull/58
+
 ## [v0.3.2](https://github.com/handlename/awsc/compare/v0.3.1...v0.3.2) - 2025-10-05
 - Make release immutable by @handlename in https://github.com/handlename/awsc/pull/55
 
