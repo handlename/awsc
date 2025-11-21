@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.4.0](https://github.com/handlename/awsc/compare/v0.3.2...v0.4.0) - 2025-11-21
+## [v0.3.3](https://github.com/handlename/awsc/compare/v0.3.2...v0.3.3) - 2025-11-21
 - chore(deps): bump the dependencies group with 3 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/59
 - chore(deps): update enricomi/publish-unit-test-result-action action to v2.21.0 by @renovate[bot] in https://github.com/handlename/awsc/pull/58
 - chore(deps): update actions/checkout action to v6 by @renovate[bot] in https://github.com/handlename/awsc/pull/63
