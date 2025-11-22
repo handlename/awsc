@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.3.3](https://github.com/handlename/awsc/compare/v0.3.2...v0.3.3) - 2025-11-22
+- chore(deps): bump the dependencies group with 3 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/59
+- chore(deps): update enricomi/publish-unit-test-result-action action to v2.21.0 by @renovate[bot] in https://github.com/handlename/awsc/pull/58
+- chore(deps): update actions/checkout action to v6 by @renovate[bot] in https://github.com/handlename/awsc/pull/63
+- fix(deps): update aws-sdk-go-v2 monorepo by @renovate[bot] in https://github.com/handlename/awsc/pull/57
+- chore(deps): update actions/setup-go action to v6.1.0 by @renovate[bot] in https://github.com/handlename/awsc/pull/62
+- fix(deps): update module github.com/aws/aws-sdk-go-v2/config to v1.32.1 by @renovate[bot] in https://github.com/handlename/awsc/pull/65
+
 ## [v0.3.3](https://github.com/handlename/awsc/compare/v0.3.2...v0.3.3) - 2025-11-21
 - chore(deps): bump the dependencies group with 3 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/59
 - chore(deps): update enricomi/publish-unit-test-result-action action to v2.21.0 by @renovate[bot] in https://github.com/handlename/awsc/pull/58
