@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.3.4](https://github.com/handlename/awsc/compare/v0.3.3...v0.3.4) - 2025-12-20
+- chore(deps): update actions/checkout action to v6.0.1 by @renovate[bot] in https://github.com/handlename/awsc/pull/68
+- fix(deps): update aws-sdk-go-v2 monorepo by @renovate[bot] in https://github.com/handlename/awsc/pull/66
+- chore(deps): update enricomi/publish-unit-test-result-action action to v2.22.0 by @renovate[bot] in https://github.com/handlename/awsc/pull/72
+- chore(deps): update songmu/tagpr action to v1.10.0 by @renovate[bot] in https://github.com/handlename/awsc/pull/71
+- fix(deps): update aws-sdk-go-v2 monorepo by @renovate[bot] in https://github.com/handlename/awsc/pull/70
+
 ## [v0.3.3](https://github.com/handlename/awsc/compare/v0.3.2...v0.3.3) - 2025-11-22
 - chore(deps): bump the dependencies group with 3 updates by @dependabot[bot] in https://github.com/handlename/awsc/pull/59
 - chore(deps): update enricomi/publish-unit-test-result-action action to v2.21.0 by @renovate[bot] in https://github.com/handlename/awsc/pull/58
