@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.3.5](https://github.com/handlename/awsc/compare/v0.3.4...v0.3.5) - 2026-01-11
+- chore(deps): update songmu/tagpr action to v1.11.0 by @renovate[bot] in https://github.com/handlename/awsc/pull/73
+- fix(deps): update aws-sdk-go-v2 monorepo by @renovate[bot] in https://github.com/handlename/awsc/pull/74
+
 ## [v0.3.4](https://github.com/handlename/awsc/compare/v0.3.3...v0.3.4) - 2025-12-20
 - chore(deps): update actions/checkout action to v6.0.1 by @renovate[bot] in https://github.com/handlename/awsc/pull/68
 - fix(deps): update aws-sdk-go-v2 monorepo by @renovate[bot] in https://github.com/handlename/awsc/pull/66
