@@ -20,7 +20,7 @@ jobs:
         run: |
           make test
       - name: report
-        uses: EnricoMi/publish-unit-test-result-action@27d65e188ec43221b20d26de30f4892fad91df2f # v2.22.0
+        uses: EnricoMi/publish-unit-test-result-action@7622c5bf3d112a72ab4fa3951c2aa5723d8ab92d # v2.25.0
         if: always()
         with:
           files: |
